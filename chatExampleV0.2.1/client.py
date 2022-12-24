@@ -26,24 +26,27 @@ class ClientX1:
         self.server.connect((self.host, self.port))
         self.handShakingLoop()
 
-    def stampMessage(self, messageType, message):
+    def stampMessage(self, messageType, message, recipient="general"):
         """
         Crea un prototipo di messaggio. Ogni messaggio inviato,
         è un file jSon che deve contenere:
-                       "sender": "nickname",
-                       "date": f"{currentTime}",
+                       "sender": "Server",
+                       "timestamp": f"{currentTime}",
                        "msgType": f"{messageType}",
+                       "recipient": f"il canale a cui viene mandato il messaggio"
                        "message": f"{message}"}
+        :param recipient:
         :param messageType: i tipi di messaggio del server possono essere:
                             error, text, handShake,
          :param message: il messaggio di testo da allegare
          :return: un file jSon
         """
         currentDateAndTime = datetime.now()
-        currentTime = currentDateAndTime.strftime("%H:%M:%S")
-        unjSonedMsg = {"sender": self.nickName,
-                       "date": f"{currentTime}",
+        timestamp = currentDateAndTime.strftime("%Y-%m-%d %H:%M:%S")
+        unjSonedMsg = {"sender": f"{self.nickName}",
+                       "timestamp": f"{timestamp}",
                        "msgType": f"{messageType}",
+                       "channel": f"{recipient}",
                        "message": f"{message}"}
         return json.dumps(unjSonedMsg)
 
@@ -106,7 +109,7 @@ class ClientX1:
                 msgRcv = self.receiveMessage()
                 sender = msgRcv["sender"]
                 msgType = msgRcv["msgType"]
-                date = msgRcv["date"]
+                timeStamp = msgRcv["timestamp"]
                 message = msgRcv["message"]
                 if sender == "Server":
                     print("WARNING - Message from Server")
@@ -119,7 +122,7 @@ class ClientX1:
                         self.nickName = message.replace("ACK::", "")
                 elif msgType == "root" and sender == "Server":
                     print("SERVER SAID")
-                print(f"{date} message received from {sender}:\n\t{message}")
+                print(f"{timeStamp} message received from {sender}:\n\t{message}")
             except Exception as e:
                 print("*** Exception")
                 print(f"\t{e}")

@@ -99,6 +99,27 @@ per proteggere i dati sensibili.
 
 
 class cryptex:
+    @staticmethod
+    def generateKeyHASH(password: str) -> bytes:
+        return hashlib.sha256(password.encode('utf-8')).digest()
+
+    @staticmethod
+    def encrypt(_key: bytes, _message: str) -> bytes:
+        # Criptazione del messaggio
+        # Utilizzo di XOR per criptare il messaggio
+        encryptedMessage = bytearray(len(_message))
+        for i, c in enumerate(_message):
+            encryptedMessage[i] = _key[i % len(_key)] ^ ord(c)
+        return bytes(encryptedMessage)
+
+    @staticmethod
+    def decrypt(_key: bytes, _encryptedMessage: bytes) -> str:
+        # Decriptazione del messaggio
+        # Utilizzo di XOR per decriptare il messaggio
+        _decryptedMessage = bytearray(len(_encryptedMessage))
+        for i, c in enumerate(_encryptedMessage):
+            _decryptedMessage[i] = _key[i % len(_key)] ^ c
+        return _decryptedMessage.decode('utf-8')
 
     @staticmethod
     def generateKeyAES():

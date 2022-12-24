@@ -1,15 +1,16 @@
 
-# networkingExample
+# SuperDuperPython_Vol.1
 
 Comprende alcuni esempi di programmazione utilizzando varie librerie di python.
 
-Ai_Lesson sono una serie di appunti, codice incluso presi facendo domande su vari argomenti alla chat di artificiale openAi chatbot.
+Ai_Lesson sono una serie di appunti, (codice incluso), presi facendo domande su vari argomenti alla chat di intelligenza artificiale openAi chatbot.
 gli argomenti sono:
-  01 - threading
-  02 - Cryptography
-  03 - 
-  04 - 
-  
+<ul>
+  <ol>01 - threading</ol>
+  <ol>02 - Cryptography</ol>
+  <ol>03 - Rick Astely</ol>
+  <ol>04 - Database</ol>
+</ul>
   
 ChatExample è una semplice applicazione di messaggistica che consente agli utenti di inviare e ricevere messaggi in tempo reale. 
 È stato sviluppato utilizzando Python e utilizza la criptografia per garantire la privacy dei messaggi degli utenti.

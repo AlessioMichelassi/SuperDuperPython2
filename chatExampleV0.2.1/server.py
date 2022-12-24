@@ -135,24 +135,27 @@ class ServerX:
             exit()
 
     @staticmethod
-    def stampMessage(messageType, message):
+    def stampMessage(messageType, message, recipient="general"):
         """
         Crea un prototipo di messaggio. Ogni messaggio inviato,
         è un file jSon che deve contenere:
                        "sender": "Server",
-                       "date": f"{currentTime}",
+                       "timestamp": f"{currentTime}",
                        "msgType": f"{messageType}",
+                       "recipient": f"il canale a cui viene mandato il messaggio o il recipient"
                        "message": f"{message}"}
+        :param recipient:
         :param messageType: i tipi di messaggio del server possono essere:
                             error, text, handShake,
          :param message: il messaggio di testo da allegare
          :return: un file jSon
         """
         currentDateAndTime = datetime.now()
-        currentTime = currentDateAndTime.strftime("%H:%M:%S")
+        timestamp = currentDateAndTime.strftime("%Y-%m-%d %H:%M:%S")
         unjSonedMsg = {"sender": "Server",
-                       "date": f"{currentTime}",
+                       "timestamp": f"{timestamp}",
                        "msgType": f"{messageType}",
+                       "recipient": f"{recipient}",
                        "message": f"{message}"}
         return json.dumps(unjSonedMsg)
 
@@ -180,7 +183,7 @@ class ServerX:
         """
         if type(message) is dict:
             unjSonedMsg = {"sender": f"{message['sender']}",
-                           "date": f"{message['date']}",
+                           "timestamp": f"{message['timestamp']}",
                            "msgType": f"{message['msgType']}",
                            "message": f"{message['message']}"}
             msg = json.dumps(unjSonedMsg)
