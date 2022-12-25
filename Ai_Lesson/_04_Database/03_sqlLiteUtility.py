@@ -36,17 +36,7 @@ ENCODER = 'utf-8'  # codifica dei caratteri per inviare i messaggi
 ipv4Protocol = socket.AF_INET
 tcpProtocol = socket.SOCK_STREAM
 
-
-class ClientX1:
-    nickName = ""
-    handShaking = False
-
-    def __init__(self, nickname, host=HOST_IP, port=HOST_PORT):
-        self.host = host
-        self.port = port
-        self.nickName = nickname
-        self.server = socket.socket(ipv4Protocol, tcpProtocol)
-        self.server.connect((self.host, self.port))
+from Ai_Lesson._04_Database.test.client import ClientX1
 
 
 class clientObj:
@@ -57,13 +47,17 @@ class clientObj:
     _hashId = ""
 
     def __init__(self, _nickName: str, _client: socket, _databaseName):
+        # sourcery skip: use-named-expression
         self.conn = sqlite3.connect(_databaseName)
         self.cursor = self.conn.cursor()
         self.nickName = _nickName
         self.mail = ""
         self._password = ""
         self.clientSocket = _client
-        self.ipAddress = self.clientSocket.getpeername()[0]
+        try:
+            self.ipAddress = self.clientSocket.getpeername()[0]
+        except Exception as e:
+            self.ipAddress = self.clientSocket.getsockname()[0]
         """
                 id INTEGER PRIMARY KEY,
                 nickName TEXT NOT NULL,
@@ -169,6 +163,7 @@ class DatabaseUtility:
             )"""
         )
         self.conn.commit()
+        self.printColumName("messages")
 
     def createUserDatabaseIfNotExist(self):
         """
@@ -179,6 +174,7 @@ class DatabaseUtility:
             """CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
                 nickName TEXT NOT NULL,
+                ipAddress TEXT NOT NULL,
                 mail TEXT NOT NULL,
                 password TEXT NOT NULL,
                 hashId TEXT NOT NULL,
@@ -187,6 +183,7 @@ class DatabaseUtility:
             )"""
         )
         self.conn.commit()
+        self.printColumName("users")
 
     def createHashDatabaseIfNotExist(self):
         """
@@ -194,7 +191,7 @@ class DatabaseUtility:
         :return:
         """
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS user (
+            """CREATE TABLE IF NOT EXISTS hash (
                 id INTEGER PRIMARY KEY,
                 nickName TEXT NOT NULL,
                 hashKey TEXT NOT NULL,
@@ -204,6 +201,7 @@ class DatabaseUtility:
             )"""
         )
         self.conn.commit()
+        self.printColumName("hash")
 
     def createTable(self, _tableName, primaryKey, *args):
         creationString = f"CREATE TABLE {_tableName} ({primaryKey} INTEGER PRIMARY KEY, "
@@ -211,6 +209,7 @@ class DatabaseUtility:
             creationString += f"{arg},"
         creationString[:-1] += ")"
         self.cursor.execute(creationString)
+        self.printColumName(_tableName)
 
     def storeANewClient(self, client: 'clientObj'):
         _nickName = client.nickName
@@ -236,7 +235,19 @@ class DatabaseUtility:
         pass
 
     def printTable(self, _table):
-        pass
+        self.cursor.execute("SELECT * FROM users")
+        results = self.cursor.fetchall()
+        for result in results:
+            print(result)
+
+    def printColumName(self, tableName):
+        # Eseguire la query PRAGMA table_info
+        self.cursor.execute(f"PRAGMA table_info({tableName})")
+
+        # Iterare sui risultati della query
+        for column in self.cursor.fetchall():
+            # Stampare il nome della colonna (il primo elemento della tupla restituita da PRAGMA table_info)
+            print(column[1])
 
     def deleteATable(self, _table):
         pass
@@ -249,9 +260,9 @@ class DatabaseUtility:
         self.conn.close()
 
 
-if __name__ == '__main__':
+"""if __name__ == '__main__':
     db = DatabaseUtility("test01")
-    aaaa = ClientX1("john")
-    client = clientObj("john", aaaa, "test01")
-    messageReceived = {"sender": "john", "timestamp": "11:11:00", "msgType": "text", "message": "HelloEveryBody"}
-    db.storeMessage(messageReceived)
+    client = ClientX1("test2")
+    clientObj = clientObj("test2", client, "test03")
+    # messageReceived = {"sender": "john", "timestamp": "11:11:00", "msgType": "text", "message": "HelloEveryBody"}
+    # db.storeMessage(messageReceived)"""
